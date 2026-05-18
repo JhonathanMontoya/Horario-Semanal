@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mi Horario Semanal">
+<meta name="theme-color" content="#181816">
+<title>Mi Horario Semanal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f7f6f3;--surface:#fff;--border:#e3e1da;--border-h:#c5c3bb;
+  --text:#181816;--muted:#68675f;--faint:#a5a39c;
+  --purple:#3C3489;--purple-bg:#EEEDFE;--purple-mid:#7F77DD;
+  --blue:#0C447C;--blue-bg:#E6F1FB;--blue-mid:#378ADD;
+  --teal:#085041;--teal-bg:#E1F5EE;--teal-mid:#1D9E75;
+  --amber:#633806;--amber-bg:#FAEEDA;--amber-mid:#EF9F27;
+  --now:#E24B4A;--red-bg:#FCEBEB;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;max-width:480px;margin:0 auto}
+
+.header{padding:16px 16px 10px;background:var(--text);flex-shrink:0}
+.header-top{display:flex;align-items:center;justify-content:space-between}
+.header-title{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.header-clock{font-family:'DM Mono',monospace;font-size:14px;color:rgba(255,255,255,.7);font-weight:500}
+.header-day{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+
+.tabs{display:flex;background:var(--text);border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:44px;font-size:12px;font-weight:700;padding:10px 4px 8px;border:none;background:transparent;color:rgba(255,255,255,.3);cursor:pointer;transition:all .15s;font-family:'Syne',sans-serif;position:relative;white-space:nowrap}
+.tab.active{color:#fff}
+.tab.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:#fff;border-radius:2px 2px 0 0}
+.tab.today-tab::before{content:'';position:absolute;top:7px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--now);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 40px}
+.scroll::-webkit-scrollbar{width:3px}
+.scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.view{display:none}
+.view.active{display:block;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+.day-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:6px 0 10px;font-family:'DM Mono',monospace}
+
+.block{border:1px solid var(--border);border-radius:11px;margin-bottom:5px;background:var(--surface);overflow:hidden;transition:border-color .2s,opacity .2s}
+.block.past{opacity:.5}
+.block.now{border-color:var(--now)!important;box-shadow:0 0 0 2px rgba(226,75,74,.1)}
+.block.now .block-time{color:var(--now);font-weight:500}
+
+.block-row{display:flex;align-items:stretch;min-height:50px}
+.block-time{font-size:10px;font-family:'DM Mono',monospace;color:var(--faint);padding:8px 7px;min-width:72px;flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);display:flex;align-items:center;line-height:1.3;transition:color .2s}
+.block-body{padding:8px 10px;flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+.block-icon{font-size:15px;flex-shrink:0;width:20px;text-align:center}
+.block-text{flex:1;min-width:0}
+.block-label{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+.block-sub{font-size:11px;color:var(--faint);margin-top:1px}
+.block-ctrl{flex-shrink:0;padding-right:4px}
+
+.b-devoc{border-color:#AFA9EC44}
+.b-ingles{border-color:#AFA9EC44;background:#EEEDFE08}
+.b-estudio{border-color:#5DCAA544;background:#E1F5EE08}
+.b-trabajo{border-color:#85B7EB44;background:#E6F1FB08}
+.b-clase{border-color:#EF9F2744;background:#FAEEDA08}
+.b-iglesia{border-color:#AFA9EC44;background:#EEEDFE08}
+
+.pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill-blue{background:var(--blue-bg);color:var(--blue)}
+.pill-purple{background:var(--purple-bg);color:var(--purple)}
+
+.check-btn{font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Syne',sans-serif;-webkit-appearance:none}
+.check-btn:active{transform:scale(.95)}
+.check-btn.done{background:var(--teal-bg);border-color:var(--teal-mid);color:var(--teal)}
+.check-btn.sleep-btn.done{background:var(--text);border-color:var(--text);color:#fff}
+
+.slider-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px}
+.slider-wrap input[type=range]{width:60px;margin:0;cursor:pointer;accent-color:var(--teal-mid)}
+.slider-time{font-size:11px;font-family:'DM Mono',monospace;font-weight:500;text-align:center}
+.s-zero{color:var(--faint)}.s-low{color:var(--amber)}.s-mid{color:var(--blue)}.s-high{color:var(--teal)}
+
+.stats-block{border:1px solid var(--border);border-radius:11px;margin-top:8px;background:var(--surface);overflow:hidden}
+.stats-hdr{padding:9px 14px;border-bottom:1px solid var(--border);background:var(--bg);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-family:'DM Mono',monospace}
+.stats-body{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.bar-row{display:flex;flex-direction:column;gap:3px}
+.bar-top{display:flex;justify-content:space-between;align-items:baseline}
+.bar-name{font-size:12px;color:var(--text)}
+.bar-val{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted)}
+.bar-track{height:4px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.total-row{border-top:1px solid var(--border);padding-top:10px;margin-top:2px;display:flex;justify-content:space-between;align-items:center}
+.total-label{font-size:12px;font-weight:700;color:var(--text)}
+.total-val{font-size:18px;font-weight:800;color:var(--text);font-family:'DM Mono',monospace}
+
+.week-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.week-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;text-align:center}
+.week-card.hl{background:var(--text);border-color:var(--text)}
+.week-val{font-size:22px;font-weight:800;color:var(--text);font-family:'DM Mono',monospace}
+.week-card.hl .week-val{color:#fff}
+.week-lbl{font-size:10px;color:var(--faint);margin-top:2px;line-height:1.4}
+.week-card.hl .week-lbl{color:rgba(255,255,255,.45)}
+
+.reminder-card{background:var(--purple-bg);border-radius:11px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.reminder-text{font-size:12px;color:var(--purple);flex:1;font-weight:700;line-height:1.4}
+.reminder-time{font-size:11px;font-family:'DM Mono',monospace;color:var(--purple-mid);flex-shrink:0}
+
+.dom-task{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border:1px solid var(--border);border-radius:11px;margin-bottom:5px;background:var(--surface)}
+.dom-text{font-size:13px;color:var(--text);line-height:1.5}
+
+.sab-card{background:var(--purple-bg);border-radius:11px;padding:20px;text-align:center;margin-bottom:8px}
+.sab-emoji{font-size:30px;margin-bottom:6px}
+.sab-title{font-size:15px;font-weight:800;color:var(--purple)}
+.sab-sub{font-size:12px;color:var(--purple-mid);margin-top:4px;line-height:1.4}
+
+.hueco{background:transparent;border:1px dashed var(--border);border-radius:11px;margin-bottom:5px;padding:8px 10px 8px 14px;font-size:11px;color:var(--faint);font-family:'DM Mono',monospace}
+
+.reset-btn{font-size:11px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--faint);cursor:pointer;font-family:'Syne',sans-serif;margin-top:10px;display:block;-webkit-appearance:none;transition:all .15s}
+.reset-btn:hover{color:var(--now);border-color:var(--now)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-title">Mi horario</div>
+    <div class="header-clock" id="clock">--:--</div>
+  </div>
+  <div class="header-day" id="hday">cargando...</div>
+</div>
+
+<div class="tabs" id="tabs">
+  <button class="tab" onclick="go(0)">Dom</button>
+  <button class="tab" onclick="go(1)">Lun</button>
+  <button class="tab" onclick="go(2)">Mar</button>
+  <button class="tab" onclick="go(3)">Mié</button>
+  <button class="tab" onclick="go(4)">Jue</button>
+  <button class="tab" onclick="go(5)">Vie</button>
+  <button class="tab" onclick="go(6)">Sáb</button>
+</div>
+
+<div class="scroll" id="scroll">
+
+<!-- DOMINGO -->
+<div id="v0" class="view">
+  <div class="day-label">Domingo — primer día de la semana</div>
+  <div class="reminder-card"><span style="font-size:16px">🔔</span><div class="reminder-text">Inicio del día — revisa tu lista de tareas</div><div class="reminder-time">8:00 am</div></div>
+  <div class="reminder-card"><span style="font-size:16px">🎯</span><div class="reminder-text">¿Cómo va tu día? Recuerda tus objetivos de la semana</div><div class="reminder-time">3:00 pm</div></div>
+  <div class="day-label" style="margin-top:12px">Tareas del día</div>
+  <div class="dom-task"><span style="font-size:16px;flex-shrink:0">📖</span><div class="dom-text">Repaso de estudio — revisar temas de la semana y avanzar en el plan de aprendizaje</div></div>
+  <div class="dom-task"><span style="font-size:16px;flex-shrink:0">👕</span><div class="dom-text">Labores del hogar — lavar ropa, tender, orden general</div></div>
+  <div class="dom-task"><span style="font-size:16px;flex-shrink:0">📍</span><div class="dom-text">Vueltas y diligencias según necesidad del día</div></div>
+  <div class="dom-task"><span style="font-size:16px;flex-shrink:0">💼</span><div class="dom-text">Trabajo si aplica para este domingo</div></div>
+  <div class="day-label" style="margin-top:14px">Estadísticas de la semana</div>
+  <div class="week-grid">
+    <div class="week-card hl"><div class="week-val" id="w-total">0%</div><div class="week-lbl">Cumplimiento general</div></div>
+    <div class="week-card"><div class="week-val" id="w-culto">0/5</div><div class="week-lbl">Cultos realizados</div></div>
+    <div class="week-card"><div class="week-val" id="w-clases">0/9</div><div class="week-lbl">Clases asistidas</div></div>
+    <div class="week-card"><div class="week-val" id="w-plan">0/4</div><div class="week-lbl">Planeaciones hechas</div></div>
+  </div>
+  <div class="stats-block">
+    <div class="stats-hdr">Horas acumuladas en la semana</div>
+    <div class="stats-body">
+      <div class="bar-row"><div class="bar-top"><span class="bar-name">Inglés</span><span class="bar-val" id="w-ih">0:00 / 2:30</span></div><div class="bar-track"><div class="bar-fill" id="w-ib" style="width:0%;background:var(--purple-mid)"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span class="bar-name">Estudio</span><span class="bar-val" id="w-eh">0:00 / 11:00</span></div><div class="bar-track"><div class="bar-fill" id="w-eb" style="width:0%;background:var(--teal-mid)"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span class="bar-name">Días dormido a tiempo</span><span class="bar-val" id="w-sl">0/6</span></div><div class="bar-track"><div class="bar-fill" id="w-sb" style="width:0%;background:var(--text)"></div></div></div>
+    </div>
+  </div>
+  <button class="reset-btn" onclick="resetWeek()">↺ Reiniciar semana</button>
+</div>
+
+<!-- LUNES -->
+<div id="v1" class="view">
+  <div class="day-label">Lunes</div>
+  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="lun-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
+  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="lun-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div><div class="block-sub">tender cama, orden, prepararse</div></div></div></div></div>
+  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
+  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
+  <div class="block" data-s="810" data-e="840"><div class="block-row"><div class="block-time">1:30 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento clase</div><div class="block-sub">1:30 – 2:00 pm</div></div></div></div></div>
+  <div class="block b-clase" data-s="840" data-e="930"><div class="block-row"><div class="block-time">2:00 – 3:30</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">2:00 – 3:30 pm · 1h 30min</div></div><div class="block-ctrl"><button class="check-btn" data-key="lun-clase1" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
+  <div class="hueco" data-s="930" data-e="960">3:30 – 4:00 pm · descanso entre clases</div>
+  <div class="block b-clase" data-s="960" data-e="1080"><div class="block-row"><div class="block-time">4:00 – 6:00</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">4:00 – 6:00 pm · 2h</div></div><div class="block-ctrl"><button class="check-btn" data-key="lun-clase2" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
+  <div class="block" data-s="1080" data-e="1140"><div class="block-row"><div class="block-time">6:00 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">6:00 – 7:00 pm</div></div></div></div></div>
+  <div class="block b-estudio" data-s="1140" data-e="1290"><div class="block-row"><div class="block-time">7:00 – 9:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">7:00 – 9:30 pm · 2h 30min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="150" step="15" value="0" data-key="lun-estudio" data-max="150" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block b-ingles" data-s="1290" data-e="1320"><div class="block-row"><div class="block-time">9:30 pm</div><div class="block-body"><span class="block-icon">🌙</span><div class="block-text"><div class="block-label">Planeación día siguiente</div><div class="block-sub">lectura en inglés · 9:30 – 10:00 pm</div></div><div class="block-ctrl"><button class="check-btn" data-key="lun-plan" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="lun-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
+  <div id="stats-lun" class="stats-block"></div>
+</div>
+
+<!-- MARTES -->
+<div id="v2" class="view">
+  <div class="day-label">Martes</div>
+  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="mar-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
+  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="mar-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div></div></div></div></div>
+  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
+  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
+  <div class="block b-estudio" data-s="810" data-e="1020"><div class="block-row"><div class="block-time">1:30 – 5:00</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">1:30 – 5:00 pm · 3h 30min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="210" step="15" value="0" data-key="mar-estudio1" data-max="210" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="1020" data-e="1050"><div class="block-row"><div class="block-time">5:00 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento clase</div><div class="block-sub">5:00 – 5:30 pm</div></div></div></div></div>
+  <div class="block" data-s="1050" data-e="1080"><div class="block-row"><div class="block-time">5:30 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">5:30 – 6:00 pm</div></div></div></div></div>
+  <div class="block b-clase" data-s="1080" data-e="1200"><div class="block-row"><div class="block-time">6:00 – 8:00</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">6:00 – 8:00 pm · 2h</div></div><div class="block-ctrl"><button class="check-btn" data-key="mar-clase1" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
+  <div class="block b-estudio" data-s="1200" data-e="1290"><div class="block-row"><div class="block-time">8:00 – 9:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">8:00 – 9:30 pm · 1h 30min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="90" step="15" value="0" data-key="mar-estudio2" data-max="90" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block b-ingles" data-s="1290" data-e="1320"><div class="block-row"><div class="block-time">9:30 pm</div><div class="block-body"><span class="block-icon">🌙</span><div class="block-text"><div class="block-label">Planeación día siguiente</div><div class="block-sub">lectura en inglés · 9:30 – 10:00 pm</div></div><div class="block-ctrl"><button class="check-btn" data-key="mar-plan" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="mar-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
+  <div id="stats-mar" class="stats-block"></div>
+</div>
+
+<!-- MIÉRCOLES -->
+<div id="v3" class="view">
+  <div class="day-label">Miércoles</div>
+  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="mie-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
+  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="mie-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div></div></div></div></div>
+  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
+  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
+  <div class="block b-estudio" data-s="810" data-e="930"><div class="block-row"><div class="block-time">1:30 – 3:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">1:30 – 3:30 pm · 2h</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="120" step="15" value="0" data-key="mie-estudio" data-max="120" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="930" data-e="960"><div class="block-row"><div class="block-time">3:30 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento clase</div><div class="block-sub">3:30 – 4:00 pm</div></div></div></div></div>
+  <div class="block b-clase" data-s="960" data-e="1080"><div class="block-row"><div class="block-time">4:00 – 6:00</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">4:00 – 6:00 pm · 2h</div></div><div class="block-ctrl"><button class="check-btn" data-key="mie-clase1" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
+  <div class="block" data-s="1080" data-e="1110"><div class="block-row"><div class="block-time">6:00 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">6:00 – 6:30 pm</div></div></div></div></div>
+  <div class="block b-clase" data-s="1110" data-e="1260"><div class="block-row"><div class="block-time">6:30 – 9:00</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">6:30 – 9:00 pm · 2h 30min</div></div><div class="block-ctrl"><button class="check-btn" data-key="mie-clase2" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
+  <div class="block b-ingles" data-s="1260" data-e="1320"><div class="block-row"><div class="block-time">9:00 pm</div><div class="block-body"><span class="block-icon">🌙</span><div class="block-text"><div class="block-label">Planeación día siguiente</div><div class="block-sub">lectura en inglés · 9:00 – 10:00 pm</div></div><div class="block-ctrl"><button class="check-btn" data-key="mie-plan" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="mie-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
+  <div id="stats-mie" class="stats-block"></div>
+</div>
+
+<!-- JUEVES -->
+<div id="v4" class="view">
+  <div class="day-label">Jueves</div>
+  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="jue-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
+  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="jue-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div></div></div></div></div>
+  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
+  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
+  <div class="block b-estudio" data-s="810" data-e="930"><div class="block-row"><div class="block-time">1:30 – 3:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">1:30 – 3:30 pm · 2h</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="120" step="15" value="0" data-key="jue-estudio" data-max="120" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="930" data-e="960"><div class="block-row"><div class="block-time">3:30 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento clase</div><div class="block-sub">3:30 – 4:00 pm</div></div></div></div></div>
+  <div class="block b-clase" data-s="960" data-e="1050"><div class="block-row"><div class="block-time">4:00 – 5:30</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">4:00 – 5:30 pm · 1h 30min</div></div><div class="block-ctrl"><button class="check-btn" data-key="jue-clase1" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
+  <div class="block" data-s="1050" data-e="1080"><div class="block-row"><div class="block-time">5:30 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">5:30 – 6:00 pm</div></div></div></div></div>
+  <div class="block b-clase" data-s="1080" data-e="1290"><div class="block-row"><div class="block-time">6:00 – 9:30</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">6:00 – 9:30 pm · 3h 30min</div></div><div class="block-ctrl"><button class="check-btn" data-key="jue-clase2" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
+  <div class="block b-ingles" data-s="1290" data-e="1320"><div class="block-row"><div class="block-time">9:30 pm</div><div class="block-body"><span class="block-icon">🌙</span><div class="block-text"><div class="block-label">Planeación día siguiente</div><div class="block-sub">lectura en inglés · 9:30 – 10:00 pm</div></div><div class="block-ctrl"><button class="check-btn" data-key="jue-plan" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="jue-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
+  <div id="stats-jue" class="stats-block"></div>
+</div>
+
+<!-- VIERNES -->
+<div id="v5" class="view">
+  <div class="day-label">Viernes</div>
+  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="vie-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
+  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
+  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="vie-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div></div></div></div></div>
+  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
+  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
+  <div class="block b-estudio" data-s="810" data-e="990"><div class="block-row"><div class="block-time">1:30 – 4:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio / labores</div><div class="block-sub">1:30 – 4:30 pm · 3h</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="180" step="15" value="0" data-key="vie-estudio" data-max="180" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
+  <div class="block" data-s="990" data-e="1020"><div class="block-row"><div class="block-time">4:30 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento</div><div class="block-sub">4:30 – 5:00 pm</div></div></div></div></div>
+  <div class="block" data-s="1020" data-e="1050"><div class="block-row"><div class="block-time">5:00 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">5:00 – 5:30 pm</div></div></div></div></div>
+  <div class="block b-iglesia" data-s="1050" data-e="1320"><div class="block-row"><div class="block-time">5:30 – 10:00</div><div class="block-body"><span class="block-icon">⛪</span><div class="block-text"><div class="block-label">Recepción del sábado e iglesia</div><div class="block-sub">actividades según programa</div></div><div class="block-ctrl"><span class="pill pill-purple">iglesia</span></div></div></div></div>
+  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="vie-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
+  <div id="stats-vie" class="stats-block"></div>
+</div>
+
+<!-- SÁBADO -->
+<div id="v6" class="view">
+  <div class="day-label">Sábado — día del Señor</div>
+  <div class="sab-card"><div class="sab-emoji">☀️</div><div class="sab-title">Día de reposo y adoración</div><div class="sab-sub">Sin actividades de estudio ni trabajo hasta el anochecer</div></div>
+  <div class="block b-iglesia" data-s="0" data-e="1200"><div class="block-row"><div class="block-time">Todo el día</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Día del Señor</div><div class="block-sub">descanso, adoración, familia</div></div><div class="block-ctrl"><span class="pill pill-purple">reposo</span></div></div></div></div>
+  <div class="block" data-s="1200" data-e="1320"><div class="block-row"><div class="block-time">Noche</div><div class="block-body"><span class="block-icon">⚽</span><div class="block-text"><div class="block-label">Actividad física</div><div class="block-sub">fútbol u otra actividad</div></div></div></div></div>
+  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10 – 11 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="sab-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
+</div>
+
+</div><!-- end scroll -->
+
+<script>
+const CFG = {
+  lun:{ cultos:['lun-culto'], ingles:['lun-ingles'], estudio:['lun-estudio'], clases:['lun-clase1','lun-clase2'], plan:['lun-plan'], sleep:'lun-sleep', mi:30, me:150 },
+  mar:{ cultos:['mar-culto'], ingles:['mar-ingles'], estudio:['mar-estudio1','mar-estudio2'], clases:['mar-clase1'], plan:['mar-plan'], sleep:'mar-sleep', mi:30, me:300 },
+  mie:{ cultos:['mie-culto'], ingles:['mie-ingles'], estudio:['mie-estudio'], clases:['mie-clase1','mie-clase2'], plan:['mie-plan'], sleep:'mie-sleep', mi:30, me:120 },
+  jue:{ cultos:['jue-culto'], ingles:['jue-ingles'], estudio:['jue-estudio'], clases:['jue-clase1','jue-clase2'], plan:['jue-plan'], sleep:'jue-sleep', mi:30, me:120 },
+  vie:{ cultos:['vie-culto'], ingles:['vie-ingles'], estudio:['vie-estudio'], clases:[], plan:[], sleep:'vie-sleep', mi:30, me:180 }
+};
+
+const S = {
+  get:k=>{ try{return localStorage.getItem('hs3_'+k)}catch(e){return null} },
+  set:(k,v)=>{ try{localStorage.setItem('hs3_'+k,v)}catch(e){} },
+  clear:()=>{ try{Object.keys(localStorage).filter(k=>k.startsWith('hs3_')).forEach(k=>localStorage.removeItem(k))}catch(e){} }
+};
+
+function ms(m){ const h=Math.floor(m/60),mn=m%60; return h+':'+(mn<10?'0':'')+mn; }
+function nm(){ const d=new Date(); return d.getHours()*60+d.getMinutes(); }
+function td(){ return new Date().getDay(); }
+function gc(k){ return S.get(k)==='1'; }
+function gm(k){ const v=S.get(k); return v?parseInt(v):0; }
+
+let cv=0;
+function go(i){
+  document.querySelectorAll('.view').forEach((v,x)=>v.classList.toggle('active',x===i));
+  document.querySelectorAll('.tab').forEach((t,x)=>t.classList.toggle('active',x===i));
+  cv=i; document.getElementById('scroll').scrollTop=0;
+  updateNow();
+}
+
+function toggleCheck(btn){
+  const done=!btn.classList.contains('done');
+  btn.classList.toggle('done',done);
+  S.set(btn.dataset.key,done?'1':'0');
+  renderAll();
+}
+
+function updSlider(inp){
+  const v=parseInt(inp.value), max=parseInt(inp.max);
+  const lbl=inp.nextElementSibling;
+  lbl.textContent=ms(v);
+  const r=v/max;
+  lbl.className='slider-time '+(v===0?'s-zero':r<0.5?'s-low':r<0.8?'s-mid':'s-high');
+  S.set(inp.dataset.key,v);
+  renderAll();
+}
+
+function updateNow(){
+  document.querySelectorAll('.block').forEach(b=>b.classList.remove('now','past'));
+  if(cv===0||cv===6) return;
+  const now=nm();
+  const view=document.querySelector('.view.active');
+  if(!view) return;
+  view.querySelectorAll('.block[data-s]').forEach(b=>{
+    const s=parseInt(b.dataset.s),e=parseInt(b.dataset.e);
+    if(now>=e) b.classList.add('past');
+    else if(now>=s&&now<e) b.classList.add('now');
+  });
+}
+
+function updateClock(){
+  const d=new Date();
+  const h=String(d.getHours()).padStart(2,'0'),m=String(d.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent=h+':'+m;
+  const names=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const date=d.toLocaleDateString('es-CO',{day:'numeric',month:'long'});
+  document.getElementById('hday').textContent=names[d.getDay()]+' · '+date;
+  updateNow();
+}
+
+function markToday(){
+  const t=td();
+  document.querySelectorAll('.tab').forEach((tab,i)=>tab.classList.toggle('today-tab',i===t));
+}
+
+function bRow(name,val,ratio,color){
+  const w=Math.min(Math.round(ratio*100),100);
+  return `<div class="bar-row"><div class="bar-top"><span class="bar-name">${name}</span><span class="bar-val">${val}</span></div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${color}"></div></div></div>`;
+}
+
+function renderDay(day,cid){
+  const d=CFG[day], el=document.getElementById(cid);
+  if(!d||!el) return;
+  const cD=d.cultos.filter(k=>gc(k)).length, cT=d.cultos.length;
+  const clD=d.clases.filter(k=>gc(k)).length, clT=d.clases.length;
+  const pD=d.plan.length>0?gc(d.plan[0]):null;
+  const sl=gc(d.sleep);
+  const iM=d.ingles.reduce((a,k)=>a+gm(k),0);
+  const eM=d.estudio.reduce((a,k)=>a+gm(k),0);
+  let sc=0,pt=0;
+  sc+=cD/Math.max(cT,1); pt++;
+  if(clT>0){sc+=clD/clT;pt++;}
+  if(d.plan.length>0){sc+=(pD?1:0);pt++;}
+  sc+=iM/d.mi; pt++;
+  sc+=eM/d.me; pt++;
+  sc+=(sl?1:0); pt++;
+  const pct=Math.round((sc/pt)*100);
+  let h=`<div class="stats-hdr">Estadísticas del día</div><div class="stats-body">`;
+  h+=bRow('Culto',cD+'/'+cT,cD/Math.max(cT,1),'var(--purple-mid)');
+  if(clT>0) h+=bRow('Clases',clD+'/'+clT,clD/Math.max(clT,1),'var(--amber-mid)');
+  if(d.plan.length>0) h+=bRow('Planeación',pD?'✓ Hecha':'Pendiente',pD?1:0,'var(--purple-mid)');
+  h+=bRow('Inglés',ms(iM)+' / '+ms(d.mi),iM/d.mi,'var(--purple-mid)');
+  h+=bRow('Estudio',ms(eM)+' / '+ms(d.me),eM/d.me,'var(--teal-mid)');
+  h+=bRow('Dormido a tiempo',sl?'✓ Sí':'No aún',sl?1:0,'var(--text)');
+  h+=`<div class="total-row"><span class="total-label">Cumplimiento del día</span><span class="total-val">${pct}%</span></div></div>`;
+  el.innerHTML=h;
+}
+
+function renderWeek(){
+  const days=['lun','mar','mie','jue','vie'];
+  let cD=0,cT=0,clD=0,clT=0,pD=0,pT=0,slD=0;
+  let iM=0,iMx=0,eM=0,eMx=0;
+  days.forEach(d=>{
+    const dd=CFG[d];
+    cD+=dd.cultos.filter(k=>gc(k)).length; cT+=dd.cultos.length;
+    clD+=dd.clases.filter(k=>gc(k)).length; clT+=dd.clases.length;
+    if(dd.plan.length>0){pD+=gc(dd.plan[0])?1:0;pT++;}
+    iM+=dd.ingles.reduce((a,k)=>a+gm(k),0); iMx+=dd.mi;
+    eM+=dd.estudio.reduce((a,k)=>a+gm(k),0); eMx+=dd.me;
+    slD+=gc(dd.sleep)?1:0;
+  });
+  slD+=gc('sab-sleep')?1:0;
+  const slT=6;
+  const tot=Math.round(((cD/cT)+(clD/Math.max(clT,1))+(pD/Math.max(pT,1))+(iM/iMx)+(eM/eMx)+(slD/slT))/6*100);
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+  set('w-total',tot+'%'); set('w-culto',cD+'/'+cT); set('w-clases',clD+'/'+clT); set('w-plan',pD+'/'+pT);
+  set('w-ih',ms(iM)+' / '+ms(iMx)); set('w-eh',ms(eM)+' / '+ms(eMx)); set('w-sl',slD+'/'+slT);
+  const bw=(id,r)=>{const e=document.getElementById(id);if(e)e.style.width=Math.min(Math.round(r*100),100)+'%'};
+  bw('w-ib',iM/iMx); bw('w-eb',eM/eMx); bw('w-sb',slD/slT);
+}
+
+function renderAll(){
+  renderDay('lun','stats-lun'); renderDay('mar','stats-mar');
+  renderDay('mie','stats-mie'); renderDay('jue','stats-jue'); renderDay('vie','stats-vie');
+  renderWeek();
+}
+
+function resetWeek(){
+  if(!confirm('¿Reiniciar todos los datos de la semana?')) return;
+  S.clear(); loadAll(); renderAll();
+}
+
+function loadAll(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    const v=S.get(el.dataset.key);
+    if(el.tagName==='BUTTON') el.classList.toggle('done',v==='1');
+    else if(el.tagName==='INPUT'&&v!==null){ el.value=parseInt(v); updSlider(el); }
+  });
+}
+
+window.addEventListener('load',()=>{
+  loadAll(); renderAll(); markToday(); updateClock();
+  setInterval(updateClock,30000);
+  go(td());
+});
+</script>
+</body>
+</html>
