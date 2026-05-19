@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Mi Horario Semanal">
+<meta name="apple-mobile-web-app-title" content="Mi Horario">
 <meta name="theme-color" content="#181816">
 <title>Mi Horario Semanal</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
@@ -18,25 +18,32 @@
   --blue:#0C447C;--blue-bg:#E6F1FB;--blue-mid:#378ADD;
   --teal:#085041;--teal-bg:#E1F5EE;--teal-mid:#1D9E75;
   --amber:#633806;--amber-bg:#FAEEDA;--amber-mid:#EF9F27;
-  --now:#E24B4A;--red-bg:#FCEBEB;
+  --now:#E24B4A;--red-bg:#FCEBEB;--red:#791F1F;
 }
 html,body{height:100%;overflow:hidden}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;max-width:480px;margin:0 auto}
 
-.header{padding:16px 16px 10px;background:var(--text);flex-shrink:0}
-.header-top{display:flex;align-items:center;justify-content:space-between}
-.header-title{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.02em}
-.header-clock{font-family:'DM Mono',monospace;font-size:14px;color:rgba(255,255,255,.7);font-weight:500}
-.header-day{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+/* HEADER */
+.header{padding:14px 16px 10px;background:var(--text);flex-shrink:0}
+.header-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.header-title{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-clock{font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,.65);font-weight:500;flex-shrink:0}
+.header-day{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.header-profile{display:flex;align-items:center;gap:6px;margin-top:6px}
+.profile-name{font-size:11px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-btn{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;font-family:'Syne',sans-serif;white-space:nowrap;flex-shrink:0}
+.profile-btn:hover{border-color:rgba(255,255,255,.5);color:#fff}
 
+/* TABS */
 .tabs{display:flex;background:var(--text);border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:1;min-width:44px;font-size:12px;font-weight:700;padding:10px 4px 8px;border:none;background:transparent;color:rgba(255,255,255,.3);cursor:pointer;transition:all .15s;font-family:'Syne',sans-serif;position:relative;white-space:nowrap}
+.tab{flex:1;min-width:42px;font-size:11px;font-weight:700;padding:9px 4px 7px;border:none;background:transparent;color:rgba(255,255,255,.3);cursor:pointer;transition:all .15s;font-family:'Syne',sans-serif;position:relative;white-space:nowrap}
 .tab.active{color:#fff}
 .tab.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:#fff;border-radius:2px 2px 0 0}
-.tab.today-tab::before{content:'';position:absolute;top:7px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--now);animation:pulse 1.5s infinite}
+.tab.today-tab::before{content:'';position:absolute;top:6px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--now);animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
 
+/* SCROLL */
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 40px}
 .scroll::-webkit-scrollbar{width:3px}
 .scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
@@ -45,13 +52,15 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 .view.active{display:block;animation:fi .2s ease}
 @keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-.day-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:6px 0 10px;font-family:'DM Mono',monospace}
+.day-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:6px 0 10px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:space-between}
+.edit-day-btn{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--faint);cursor:pointer;font-family:'Syne',sans-serif}
+.edit-day-btn:hover{border-color:var(--border-h);color:var(--text)}
 
+/* BLOCKS */
 .block{border:1px solid var(--border);border-radius:11px;margin-bottom:5px;background:var(--surface);overflow:hidden;transition:border-color .2s,opacity .2s}
 .block.past{opacity:.5}
 .block.now{border-color:var(--now)!important;box-shadow:0 0 0 2px rgba(226,75,74,.1)}
 .block.now .block-time{color:var(--now);font-weight:500}
-
 .block-row{display:flex;align-items:stretch;min-height:50px}
 .block-time{font-size:10px;font-family:'DM Mono',monospace;color:var(--faint);padding:8px 7px;min-width:72px;flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);display:flex;align-items:center;line-height:1.3;transition:color .2s}
 .block-body{padding:8px 10px;flex:1;display:flex;align-items:center;gap:8px;min-width:0}
@@ -59,7 +68,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 .block-text{flex:1;min-width:0}
 .block-label{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
 .block-sub{font-size:11px;color:var(--faint);margin-top:1px}
-.block-ctrl{flex-shrink:0;padding-right:4px}
+.block-ctrl{flex-shrink:0;padding-right:4px;display:flex;align-items:center;gap:6px}
 
 .b-devoc{border-color:#AFA9EC44}
 .b-ingles{border-color:#AFA9EC44;background:#EEEDFE08}
@@ -67,6 +76,10 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 .b-trabajo{border-color:#85B7EB44;background:#E6F1FB08}
 .b-clase{border-color:#EF9F2744;background:#FAEEDA08}
 .b-iglesia{border-color:#AFA9EC44;background:#EEEDFE08}
+.b-otro{border-color:var(--border)}
+
+.edit-block-btn{font-size:13px;color:var(--faint);cursor:pointer;padding:2px 4px;border:none;background:transparent;flex-shrink:0;line-height:1}
+.edit-block-btn:hover{color:var(--text)}
 
 .pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
 .pill-blue{background:var(--blue-bg);color:var(--blue)}
@@ -77,11 +90,15 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 .check-btn.done{background:var(--teal-bg);border-color:var(--teal-mid);color:var(--teal)}
 .check-btn.sleep-btn.done{background:var(--text);border-color:var(--text);color:#fff}
 
-.slider-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px}
-.slider-wrap input[type=range]{width:60px;margin:0;cursor:pointer;accent-color:var(--teal-mid)}
+.slider-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:58px}
+.slider-wrap input[type=range]{width:58px;margin:0;cursor:pointer;accent-color:var(--teal-mid)}
 .slider-time{font-size:11px;font-family:'DM Mono',monospace;font-weight:500;text-align:center}
 .s-zero{color:var(--faint)}.s-low{color:var(--amber)}.s-mid{color:var(--blue)}.s-high{color:var(--teal)}
 
+.add-block-btn{width:100%;padding:10px;border:1px dashed var(--border);border-radius:11px;background:transparent;color:var(--faint);font-size:12px;font-family:'Syne',sans-serif;cursor:pointer;margin-bottom:5px;transition:all .15s}
+.add-block-btn:hover{border-color:var(--border-h);color:var(--text)}
+
+/* STATS */
 .stats-block{border:1px solid var(--border);border-radius:11px;margin-top:8px;background:var(--surface);overflow:hidden}
 .stats-hdr{padding:9px 14px;border-bottom:1px solid var(--border);background:var(--bg);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-family:'DM Mono',monospace}
 .stats-body{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
@@ -111,7 +128,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 .dom-text{font-size:13px;color:var(--text);line-height:1.5}
 
 .sab-card{background:var(--purple-bg);border-radius:11px;padding:20px;text-align:center;margin-bottom:8px}
-.sab-emoji{font-size:30px;margin-bottom:6px}
+.sab-emoji{font-size:28px;margin-bottom:6px}
 .sab-title{font-size:15px;font-weight:800;color:var(--purple)}
 .sab-sub{font-size:12px;color:var(--purple-mid);margin-top:4px;line-height:1.4}
 
@@ -119,16 +136,73 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 
 .reset-btn{font-size:11px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--faint);cursor:pointer;font-family:'Syne',sans-serif;margin-top:10px;display:block;-webkit-appearance:none;transition:all .15s}
 .reset-btn:hover{color:var(--now);border-color:var(--now)}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;padding:20px 16px 40px;animation:slideUp .2s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.modal-close{font-size:20px;color:var(--faint);cursor:pointer;border:none;background:transparent;line-height:1;padding:0 4px}
+
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:6px;display:block}
+.form-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:13px;font-family:'Syne',sans-serif;-webkit-appearance:none;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--border-h)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.type-opt{padding:8px 4px;border:1px solid var(--border);border-radius:10px;text-align:center;font-size:12px;cursor:pointer;transition:all .15s;background:var(--bg)}
+.type-opt:hover{border-color:var(--border-h)}
+.type-opt.selected{border-color:var(--text);background:var(--text);color:#fff}
+.type-opt .type-icon{font-size:16px;display:block;margin-bottom:2px}
+.type-opt .type-name{font-size:10px;font-weight:700}
+
+.ctrl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.ctrl-opt{padding:8px 4px;border:1px solid var(--border);border-radius:10px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--bg);color:var(--muted)}
+.ctrl-opt:hover{border-color:var(--border-h);color:var(--text)}
+.ctrl-opt.selected{border-color:var(--text);background:var(--text);color:#fff}
+
+.btn-primary{width:100%;padding:13px;border-radius:11px;border:none;background:var(--text);color:#fff;font-size:14px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;transition:opacity .15s;-webkit-appearance:none}
+.btn-primary:hover{opacity:.85}
+.btn-primary:active{transform:scale(.98)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid #F0999588;margin-top:8px}
+.btn-danger:hover{background:var(--red);color:#fff;opacity:1}
+
+/* PROFILES SCREEN */
+.profiles-screen{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
+.profiles-header{padding:20px 16px 16px;background:var(--text)}
+.profiles-title{font-size:20px;font-weight:800;color:#fff}
+.profiles-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px;font-family:'DM Mono',monospace}
+.profiles-list{flex:1;overflow-y:auto;padding:16px}
+.profile-card{border:1px solid var(--border);border-radius:14px;background:var(--surface);margin-bottom:8px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.profile-card:hover{border-color:var(--border-h)}
+.profile-card.active-profile{border-color:var(--teal-mid);background:var(--teal-bg)}
+.profile-card-body{padding:14px 16px;display:flex;align-items:center;gap:12px}
+.profile-card-info{flex:1;min-width:0}
+.profile-card-name{font-size:14px;font-weight:700;color:var(--text)}
+.profile-card.active-profile .profile-card-name{color:var(--teal)}
+.profile-card-meta{font-size:11px;color:var(--faint);margin-top:2px;font-family:'DM Mono',monospace}
+.profile-card-actions{display:flex;gap:6px;flex-shrink:0}
+.profile-action-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Syne',sans-serif}
+.profile-action-btn:hover{border-color:var(--border-h);color:var(--text)}
+.profile-action-btn.danger:hover{border-color:var(--now);color:var(--now)}
+.new-profile-btn{width:100%;padding:14px;border:1px dashed var(--border);border-radius:14px;background:transparent;color:var(--muted);font-size:13px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s}
+.new-profile-btn:hover{border-color:var(--border-h);color:var(--text)}
+.active-check{font-size:18px;color:var(--teal-mid);flex-shrink:0}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-top">
-    <div class="header-title">Mi horario</div>
+    <div class="header-title" id="header-title">Mi horario</div>
     <div class="header-clock" id="clock">--:--</div>
   </div>
   <div class="header-day" id="hday">cargando...</div>
+  <div class="header-profile">
+    <div class="profile-name" id="profile-name-display">Cargando perfil...</div>
+    <button class="profile-btn" onclick="openProfiles()">Perfiles</button>
+  </div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -142,294 +216,626 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 </div>
 
 <div class="scroll" id="scroll">
+  <div id="day-content"></div>
+</div>
 
-<!-- DOMINGO -->
-<div id="v0" class="view">
-  <div class="day-label">Domingo — primer día de la semana</div>
-  <div class="reminder-card"><span style="font-size:16px">🔔</span><div class="reminder-text">Inicio del día — revisa tu lista de tareas</div><div class="reminder-time">8:00 am</div></div>
-  <div class="reminder-card"><span style="font-size:16px">🎯</span><div class="reminder-text">¿Cómo va tu día? Recuerda tus objetivos de la semana</div><div class="reminder-time">3:00 pm</div></div>
-  <div class="day-label" style="margin-top:12px">Tareas del día</div>
-  <div class="dom-task"><span style="font-size:16px;flex-shrink:0">📖</span><div class="dom-text">Repaso de estudio — revisar temas de la semana y avanzar en el plan de aprendizaje</div></div>
-  <div class="dom-task"><span style="font-size:16px;flex-shrink:0">👕</span><div class="dom-text">Labores del hogar — lavar ropa, tender, orden general</div></div>
-  <div class="dom-task"><span style="font-size:16px;flex-shrink:0">📍</span><div class="dom-text">Vueltas y diligencias según necesidad del día</div></div>
-  <div class="dom-task"><span style="font-size:16px;flex-shrink:0">💼</span><div class="dom-text">Trabajo si aplica para este domingo</div></div>
-  <div class="day-label" style="margin-top:14px">Estadísticas de la semana</div>
-  <div class="week-grid">
-    <div class="week-card hl"><div class="week-val" id="w-total">0%</div><div class="week-lbl">Cumplimiento general</div></div>
-    <div class="week-card"><div class="week-val" id="w-culto">0/5</div><div class="week-lbl">Cultos realizados</div></div>
-    <div class="week-card"><div class="week-val" id="w-clases">0/9</div><div class="week-lbl">Clases asistidas</div></div>
-    <div class="week-card"><div class="week-val" id="w-plan">0/4</div><div class="week-lbl">Planeaciones hechas</div></div>
+<!-- PROFILES SCREEN -->
+<div class="profiles-screen" id="profiles-screen" style="display:none">
+  <div class="profiles-header">
+    <div class="profiles-title">Perfiles</div>
+    <div class="profiles-sub">Selecciona o crea un horario</div>
   </div>
-  <div class="stats-block">
-    <div class="stats-hdr">Horas acumuladas en la semana</div>
-    <div class="stats-body">
-      <div class="bar-row"><div class="bar-top"><span class="bar-name">Inglés</span><span class="bar-val" id="w-ih">0:00 / 2:30</span></div><div class="bar-track"><div class="bar-fill" id="w-ib" style="width:0%;background:var(--purple-mid)"></div></div></div>
-      <div class="bar-row"><div class="bar-top"><span class="bar-name">Estudio</span><span class="bar-val" id="w-eh">0:00 / 11:00</span></div><div class="bar-track"><div class="bar-fill" id="w-eb" style="width:0%;background:var(--teal-mid)"></div></div></div>
-      <div class="bar-row"><div class="bar-top"><span class="bar-name">Días dormido a tiempo</span><span class="bar-val" id="w-sl">0/6</span></div><div class="bar-track"><div class="bar-fill" id="w-sb" style="width:0%;background:var(--text)"></div></div></div>
-    </div>
-  </div>
-  <button class="reset-btn" onclick="resetWeek()">↺ Reiniciar semana</button>
+  <div class="profiles-list" id="profiles-list"></div>
 </div>
 
-<!-- LUNES -->
-<div id="v1" class="view">
-  <div class="day-label">Lunes</div>
-  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="lun-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
-  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="lun-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div><div class="block-sub">tender cama, orden, prepararse</div></div></div></div></div>
-  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
-  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
-  <div class="block" data-s="810" data-e="840"><div class="block-row"><div class="block-time">1:30 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento clase</div><div class="block-sub">1:30 – 2:00 pm</div></div></div></div></div>
-  <div class="block b-clase" data-s="840" data-e="930"><div class="block-row"><div class="block-time">2:00 – 3:30</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">2:00 – 3:30 pm · 1h 30min</div></div><div class="block-ctrl"><button class="check-btn" data-key="lun-clase1" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
-  <div class="hueco" data-s="930" data-e="960">3:30 – 4:00 pm · descanso entre clases</div>
-  <div class="block b-clase" data-s="960" data-e="1080"><div class="block-row"><div class="block-time">4:00 – 6:00</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">4:00 – 6:00 pm · 2h</div></div><div class="block-ctrl"><button class="check-btn" data-key="lun-clase2" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
-  <div class="block" data-s="1080" data-e="1140"><div class="block-row"><div class="block-time">6:00 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">6:00 – 7:00 pm</div></div></div></div></div>
-  <div class="block b-estudio" data-s="1140" data-e="1290"><div class="block-row"><div class="block-time">7:00 – 9:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">7:00 – 9:30 pm · 2h 30min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="150" step="15" value="0" data-key="lun-estudio" data-max="150" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block b-ingles" data-s="1290" data-e="1320"><div class="block-row"><div class="block-time">9:30 pm</div><div class="block-body"><span class="block-icon">🌙</span><div class="block-text"><div class="block-label">Planeación día siguiente</div><div class="block-sub">lectura en inglés · 9:30 – 10:00 pm</div></div><div class="block-ctrl"><button class="check-btn" data-key="lun-plan" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="lun-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
-  <div id="stats-lun" class="stats-block"></div>
-</div>
-
-<!-- MARTES -->
-<div id="v2" class="view">
-  <div class="day-label">Martes</div>
-  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="mar-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
-  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="mar-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div></div></div></div></div>
-  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
-  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
-  <div class="block b-estudio" data-s="810" data-e="1020"><div class="block-row"><div class="block-time">1:30 – 5:00</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">1:30 – 5:00 pm · 3h 30min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="210" step="15" value="0" data-key="mar-estudio1" data-max="210" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="1020" data-e="1050"><div class="block-row"><div class="block-time">5:00 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento clase</div><div class="block-sub">5:00 – 5:30 pm</div></div></div></div></div>
-  <div class="block" data-s="1050" data-e="1080"><div class="block-row"><div class="block-time">5:30 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">5:30 – 6:00 pm</div></div></div></div></div>
-  <div class="block b-clase" data-s="1080" data-e="1200"><div class="block-row"><div class="block-time">6:00 – 8:00</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">6:00 – 8:00 pm · 2h</div></div><div class="block-ctrl"><button class="check-btn" data-key="mar-clase1" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
-  <div class="block b-estudio" data-s="1200" data-e="1290"><div class="block-row"><div class="block-time">8:00 – 9:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">8:00 – 9:30 pm · 1h 30min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="90" step="15" value="0" data-key="mar-estudio2" data-max="90" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block b-ingles" data-s="1290" data-e="1320"><div class="block-row"><div class="block-time">9:30 pm</div><div class="block-body"><span class="block-icon">🌙</span><div class="block-text"><div class="block-label">Planeación día siguiente</div><div class="block-sub">lectura en inglés · 9:30 – 10:00 pm</div></div><div class="block-ctrl"><button class="check-btn" data-key="mar-plan" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="mar-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
-  <div id="stats-mar" class="stats-block"></div>
-</div>
-
-<!-- MIÉRCOLES -->
-<div id="v3" class="view">
-  <div class="day-label">Miércoles</div>
-  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="mie-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
-  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="mie-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div></div></div></div></div>
-  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
-  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
-  <div class="block b-estudio" data-s="810" data-e="930"><div class="block-row"><div class="block-time">1:30 – 3:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">1:30 – 3:30 pm · 2h</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="120" step="15" value="0" data-key="mie-estudio" data-max="120" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="930" data-e="960"><div class="block-row"><div class="block-time">3:30 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento clase</div><div class="block-sub">3:30 – 4:00 pm</div></div></div></div></div>
-  <div class="block b-clase" data-s="960" data-e="1080"><div class="block-row"><div class="block-time">4:00 – 6:00</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">4:00 – 6:00 pm · 2h</div></div><div class="block-ctrl"><button class="check-btn" data-key="mie-clase1" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
-  <div class="block" data-s="1080" data-e="1110"><div class="block-row"><div class="block-time">6:00 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">6:00 – 6:30 pm</div></div></div></div></div>
-  <div class="block b-clase" data-s="1110" data-e="1260"><div class="block-row"><div class="block-time">6:30 – 9:00</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">6:30 – 9:00 pm · 2h 30min</div></div><div class="block-ctrl"><button class="check-btn" data-key="mie-clase2" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
-  <div class="block b-ingles" data-s="1260" data-e="1320"><div class="block-row"><div class="block-time">9:00 pm</div><div class="block-body"><span class="block-icon">🌙</span><div class="block-text"><div class="block-label">Planeación día siguiente</div><div class="block-sub">lectura en inglés · 9:00 – 10:00 pm</div></div><div class="block-ctrl"><button class="check-btn" data-key="mie-plan" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="mie-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
-  <div id="stats-mie" class="stats-block"></div>
-</div>
-
-<!-- JUEVES -->
-<div id="v4" class="view">
-  <div class="day-label">Jueves</div>
-  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="jue-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
-  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="jue-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div></div></div></div></div>
-  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
-  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
-  <div class="block b-estudio" data-s="810" data-e="930"><div class="block-row"><div class="block-time">1:30 – 3:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio</div><div class="block-sub">1:30 – 3:30 pm · 2h</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="120" step="15" value="0" data-key="jue-estudio" data-max="120" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="930" data-e="960"><div class="block-row"><div class="block-time">3:30 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento clase</div><div class="block-sub">3:30 – 4:00 pm</div></div></div></div></div>
-  <div class="block b-clase" data-s="960" data-e="1050"><div class="block-row"><div class="block-time">4:00 – 5:30</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">4:00 – 5:30 pm · 1h 30min</div></div><div class="block-ctrl"><button class="check-btn" data-key="jue-clase1" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
-  <div class="block" data-s="1050" data-e="1080"><div class="block-row"><div class="block-time">5:30 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">5:30 – 6:00 pm</div></div></div></div></div>
-  <div class="block b-clase" data-s="1080" data-e="1290"><div class="block-row"><div class="block-time">6:00 – 9:30</div><div class="block-body"><span class="block-icon">🎓</span><div class="block-text"><div class="block-label">Clase universitaria</div><div class="block-sub">6:00 – 9:30 pm · 3h 30min</div></div><div class="block-ctrl"><button class="check-btn" data-key="jue-clase2" onclick="toggleCheck(this)">✓ Asistí</button></div></div></div></div>
-  <div class="block b-ingles" data-s="1290" data-e="1320"><div class="block-row"><div class="block-time">9:30 pm</div><div class="block-body"><span class="block-icon">🌙</span><div class="block-text"><div class="block-label">Planeación día siguiente</div><div class="block-sub">lectura en inglés · 9:30 – 10:00 pm</div></div><div class="block-ctrl"><button class="check-btn" data-key="jue-plan" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="jue-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
-  <div id="stats-jue" class="stats-block"></div>
-</div>
-
-<!-- VIERNES -->
-<div id="v5" class="view">
-  <div class="day-label">Viernes</div>
-  <div class="block b-devoc" data-s="300" data-e="330"><div class="block-row"><div class="block-time">5:00 am</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Culto devocional</div><div class="block-sub">5:00 – 5:30 am</div></div><div class="block-ctrl"><button class="check-btn" data-key="vie-culto" onclick="toggleCheck(this)">✓ Hecho</button></div></div></div></div>
-  <div class="block" data-s="330" data-e="390"><div class="block-row"><div class="block-time">5:30 am</div><div class="block-body"><span class="block-icon">🍳</span><div class="block-text"><div class="block-label">Desayuno</div><div class="block-sub">5:30 – 6:30 am</div></div></div></div></div>
-  <div class="block b-ingles" data-s="390" data-e="420"><div class="block-row"><div class="block-time">6:30 am</div><div class="block-body"><span class="block-icon">🇬🇧</span><div class="block-text"><div class="block-label">Inglés + lectura</div><div class="block-sub">6:30 – 7:00 am · 30 min</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="30" step="5" value="0" data-key="vie-ingles" data-max="30" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="450" data-e="480"><div class="block-row"><div class="block-time">7:30 am</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento trabajo</div></div></div></div></div>
-  <div class="block b-trabajo" data-s="480" data-e="750"><div class="block-row"><div class="block-time">8:00 – 12:30</div><div class="block-body"><span class="block-icon">💼</span><div class="block-text"><div class="block-label">Trabajo</div></div><div class="block-ctrl"><span class="pill pill-blue">trabajo</span></div></div></div></div>
-  <div class="block" data-s="750" data-e="810"><div class="block-row"><div class="block-time">12:30 – 1:30</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Almuerzo y reposo</div></div></div></div></div>
-  <div class="block b-estudio" data-s="810" data-e="990"><div class="block-row"><div class="block-time">1:30 – 4:30</div><div class="block-body"><span class="block-icon">💻</span><div class="block-text"><div class="block-label">Estudio / labores</div><div class="block-sub">1:30 – 4:30 pm · 3h</div></div><div class="block-ctrl"><div class="slider-wrap"><input type="range" min="0" max="180" step="15" value="0" data-key="vie-estudio" data-max="180" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div></div></div></div></div>
-  <div class="block" data-s="990" data-e="1020"><div class="block-row"><div class="block-time">4:30 pm</div><div class="block-body"><span class="block-icon">👔</span><div class="block-text"><div class="block-label">Alistamiento</div><div class="block-sub">4:30 – 5:00 pm</div></div></div></div></div>
-  <div class="block" data-s="1020" data-e="1050"><div class="block-row"><div class="block-time">5:00 pm</div><div class="block-body"><span class="block-icon">🍽️</span><div class="block-text"><div class="block-label">Cena</div><div class="block-sub">5:00 – 5:30 pm</div></div></div></div></div>
-  <div class="block b-iglesia" data-s="1050" data-e="1320"><div class="block-row"><div class="block-time">5:30 – 10:00</div><div class="block-body"><span class="block-icon">⛪</span><div class="block-text"><div class="block-label">Recepción del sábado e iglesia</div><div class="block-sub">actividades según programa</div></div><div class="block-ctrl"><span class="pill pill-purple">iglesia</span></div></div></div></div>
-  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10:00 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="vie-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
-  <div id="stats-vie" class="stats-block"></div>
-</div>
-
-<!-- SÁBADO -->
-<div id="v6" class="view">
-  <div class="day-label">Sábado — día del Señor</div>
-  <div class="sab-card"><div class="sab-emoji">☀️</div><div class="sab-title">Día de reposo y adoración</div><div class="sab-sub">Sin actividades de estudio ni trabajo hasta el anochecer</div></div>
-  <div class="block b-iglesia" data-s="0" data-e="1200"><div class="block-row"><div class="block-time">Todo el día</div><div class="block-body"><span class="block-icon">🙏</span><div class="block-text"><div class="block-label">Día del Señor</div><div class="block-sub">descanso, adoración, familia</div></div><div class="block-ctrl"><span class="pill pill-purple">reposo</span></div></div></div></div>
-  <div class="block" data-s="1200" data-e="1320"><div class="block-row"><div class="block-time">Noche</div><div class="block-body"><span class="block-icon">⚽</span><div class="block-text"><div class="block-label">Actividad física</div><div class="block-sub">fútbol u otra actividad</div></div></div></div></div>
-  <div class="block" data-s="1320" data-e="1440"><div class="block-row"><div class="block-time">10 – 11 pm</div><div class="block-body"><span class="block-icon">😴</span><div class="block-text"><div class="block-label">Dormir</div><div class="block-sub">meta: antes de las 11:00 pm</div></div><div class="block-ctrl"><button class="check-btn sleep-btn" data-key="sab-sleep" onclick="toggleCheck(this)">✓ A tiempo</button></div></div></div></div>
-</div>
-
-</div><!-- end scroll -->
+<!-- MODALS -->
+<div id="modal-container"></div>
 
 <script>
-const CFG = {
-  lun:{ cultos:['lun-culto'], ingles:['lun-ingles'], estudio:['lun-estudio'], clases:['lun-clase1','lun-clase2'], plan:['lun-plan'], sleep:'lun-sleep', mi:30, me:150 },
-  mar:{ cultos:['mar-culto'], ingles:['mar-ingles'], estudio:['mar-estudio1','mar-estudio2'], clases:['mar-clase1'], plan:['mar-plan'], sleep:'mar-sleep', mi:30, me:300 },
-  mie:{ cultos:['mie-culto'], ingles:['mie-ingles'], estudio:['mie-estudio'], clases:['mie-clase1','mie-clase2'], plan:['mie-plan'], sleep:'mie-sleep', mi:30, me:120 },
-  jue:{ cultos:['jue-culto'], ingles:['jue-ingles'], estudio:['jue-estudio'], clases:['jue-clase1','jue-clase2'], plan:['jue-plan'], sleep:'jue-sleep', mi:30, me:120 },
-  vie:{ cultos:['vie-culto'], ingles:['vie-ingles'], estudio:['vie-estudio'], clases:[], plan:[], sleep:'vie-sleep', mi:30, me:180 }
-};
+// ── CONSTANTS ─────────────────────────────────────────────────
+const DAYS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const DAY_KEYS = ['dom','lun','mar','mie','jue','vie','sab'];
+const TYPES = [
+  {id:'devoc', icon:'🙏', name:'Devocional', cls:'b-devoc'},
+  {id:'ingles', icon:'🇬🇧', name:'Inglés', cls:'b-ingles'},
+  {id:'estudio', icon:'💻', name:'Estudio', cls:'b-estudio'},
+  {id:'trabajo', icon:'💼', name:'Trabajo', cls:'b-trabajo'},
+  {id:'clase', icon:'🎓', name:'Clase', cls:'b-clase'},
+  {id:'iglesia', icon:'⛪', name:'Iglesia', cls:'b-iglesia'},
+  {id:'comida', icon:'🍽️', name:'Comida', cls:''},
+  {id:'alistamiento', icon:'👔', name:'Alist.', cls:''},
+  {id:'descanso', icon:'😴', name:'Descanso', cls:''},
+  {id:'actividad', icon:'⚽', name:'Activ.', cls:''},
+  {id:'otro', icon:'📌', name:'Otro', cls:'b-otro'}
+];
+const CTRLS = [
+  {id:'none', name:'Sin control'},
+  {id:'check', name:'✓ Hecho'},
+  {id:'check-clase', name:'✓ Asistí'},
+  {id:'sleep', name:'✓ A tiempo'},
+  {id:'slider', name:'Slider horas'}
+];
 
+// ── STORAGE ───────────────────────────────────────────────────
 const S = {
-  get:k=>{ try{return localStorage.getItem('hs3_'+k)}catch(e){return null} },
-  set:(k,v)=>{ try{localStorage.setItem('hs3_'+k,v)}catch(e){} },
-  clear:()=>{ try{Object.keys(localStorage).filter(k=>k.startsWith('hs3_')).forEach(k=>localStorage.removeItem(k))}catch(e){} }
+  get: k => { try{return JSON.parse(localStorage.getItem('hs4_'+k))}catch(e){return null} },
+  set: (k,v) => { try{localStorage.setItem('hs4_'+k, JSON.stringify(v))}catch(e){} },
+  del: k => { try{localStorage.removeItem('hs4_'+k)}catch(e){} }
 };
 
-function ms(m){ const h=Math.floor(m/60),mn=m%60; return h+':'+(mn<10?'0':'')+mn; }
-function nm(){ const d=new Date(); return d.getHours()*60+d.getMinutes(); }
-function td(){ return new Date().getDay(); }
-function gc(k){ return S.get(k)==='1'; }
-function gm(k){ const v=S.get(k); return v?parseInt(v):0; }
+// ── STATE ─────────────────────────────────────────────────────
+let profiles = [];
+let activeProfileId = null;
+let currentDay = 0;
+let editingBlockDay = null;
+let editingBlockId = null;
 
-let cv=0;
-function go(i){
-  document.querySelectorAll('.view').forEach((v,x)=>v.classList.toggle('active',x===i));
-  document.querySelectorAll('.tab').forEach((t,x)=>t.classList.toggle('active',x===i));
-  cv=i; document.getElementById('scroll').scrollTop=0;
+// ── DEFAULT PROFILE ───────────────────────────────────────────
+function defaultProfile() {
+  return {
+    id: 'p_' + Date.now(),
+    name: 'Semestre normal',
+    schedule: {
+      dom: { special: 'domingo', blocks: [] },
+      lun: { blocks: [
+        {id:'b1', time:'5:00 – 5:30', start:300, end:330, label:'Culto devocional', type:'devoc', ctrl:'check'},
+        {id:'b2', time:'5:30 – 6:30', start:330, end:390, label:'Desayuno', type:'comida', ctrl:'none'},
+        {id:'b3', time:'6:30 – 7:00', start:390, end:420, label:'Inglés + lectura', type:'ingles', ctrl:'slider', max:30},
+        {id:'b4', time:'7:30 – 8:00', start:450, end:480, label:'Alistamiento trabajo', type:'alistamiento', ctrl:'none'},
+        {id:'b5', time:'8:00 – 12:30', start:480, end:750, label:'Trabajo', type:'trabajo', ctrl:'none'},
+        {id:'b6', time:'12:30 – 1:30', start:750, end:810, label:'Almuerzo y reposo', type:'comida', ctrl:'none'},
+        {id:'b7', time:'1:30 – 2:00', start:810, end:840, label:'Alistamiento clase', type:'alistamiento', ctrl:'none'},
+        {id:'b8', time:'2:00 – 3:30', start:840, end:930, label:'Clase universitaria', type:'clase', ctrl:'check-clase'},
+        {id:'b9', time:'3:30 – 4:00', start:930, end:960, label:'Descanso entre clases', type:'descanso', ctrl:'none', hueco:true},
+        {id:'b10', time:'4:00 – 6:00', start:960, end:1080, label:'Clase universitaria', type:'clase', ctrl:'check-clase'},
+        {id:'b11', time:'6:00 – 7:00', start:1080, end:1140, label:'Cena', type:'comida', ctrl:'none'},
+        {id:'b12', time:'7:00 – 9:30', start:1140, end:1290, label:'Estudio', type:'estudio', ctrl:'slider', max:150},
+        {id:'b13', time:'9:30 – 10:00', start:1290, end:1320, label:'Planeación día siguiente', type:'ingles', ctrl:'check', sub:'lectura en inglés'},
+        {id:'b14', time:'10:00 pm', start:1320, end:1440, label:'Dormir', type:'descanso', ctrl:'sleep', sub:'meta: antes de las 11:00 pm'}
+      ]},
+      mar: { blocks: [
+        {id:'b1', time:'5:00 – 5:30', start:300, end:330, label:'Culto devocional', type:'devoc', ctrl:'check'},
+        {id:'b2', time:'5:30 – 6:30', start:330, end:390, label:'Desayuno', type:'comida', ctrl:'none'},
+        {id:'b3', time:'6:30 – 7:00', start:390, end:420, label:'Inglés + lectura', type:'ingles', ctrl:'slider', max:30},
+        {id:'b4', time:'7:30 – 8:00', start:450, end:480, label:'Alistamiento trabajo', type:'alistamiento', ctrl:'none'},
+        {id:'b5', time:'8:00 – 12:30', start:480, end:750, label:'Trabajo', type:'trabajo', ctrl:'none'},
+        {id:'b6', time:'12:30 – 1:30', start:750, end:810, label:'Almuerzo y reposo', type:'comida', ctrl:'none'},
+        {id:'b7', time:'1:30 – 5:00', start:810, end:1020, label:'Estudio', type:'estudio', ctrl:'slider', max:210},
+        {id:'b8', time:'5:00 – 5:30', start:1020, end:1050, label:'Alistamiento clase', type:'alistamiento', ctrl:'none'},
+        {id:'b9', time:'5:30 – 6:00', start:1050, end:1080, label:'Cena', type:'comida', ctrl:'none'},
+        {id:'b10', time:'6:00 – 8:00', start:1080, end:1200, label:'Clase universitaria', type:'clase', ctrl:'check-clase'},
+        {id:'b11', time:'8:00 – 9:30', start:1200, end:1290, label:'Estudio', type:'estudio', ctrl:'slider', max:90},
+        {id:'b12', time:'9:30 – 10:00', start:1290, end:1320, label:'Planeación día siguiente', type:'ingles', ctrl:'check', sub:'lectura en inglés'},
+        {id:'b13', time:'10:00 pm', start:1320, end:1440, label:'Dormir', type:'descanso', ctrl:'sleep', sub:'meta: antes de las 11:00 pm'}
+      ]},
+      mie: { blocks: [
+        {id:'b1', time:'5:00 – 5:30', start:300, end:330, label:'Culto devocional', type:'devoc', ctrl:'check'},
+        {id:'b2', time:'5:30 – 6:30', start:330, end:390, label:'Desayuno', type:'comida', ctrl:'none'},
+        {id:'b3', time:'6:30 – 7:00', start:390, end:420, label:'Inglés + lectura', type:'ingles', ctrl:'slider', max:30},
+        {id:'b4', time:'7:30 – 8:00', start:450, end:480, label:'Alistamiento trabajo', type:'alistamiento', ctrl:'none'},
+        {id:'b5', time:'8:00 – 12:30', start:480, end:750, label:'Trabajo', type:'trabajo', ctrl:'none'},
+        {id:'b6', time:'12:30 – 1:30', start:750, end:810, label:'Almuerzo y reposo', type:'comida', ctrl:'none'},
+        {id:'b7', time:'1:30 – 3:30', start:810, end:930, label:'Estudio', type:'estudio', ctrl:'slider', max:120},
+        {id:'b8', time:'3:30 – 4:00', start:930, end:960, label:'Alistamiento clase', type:'alistamiento', ctrl:'none'},
+        {id:'b9', time:'4:00 – 6:00', start:960, end:1080, label:'Clase universitaria', type:'clase', ctrl:'check-clase'},
+        {id:'b10', time:'6:00 – 6:30', start:1080, end:1110, label:'Cena', type:'comida', ctrl:'none'},
+        {id:'b11', time:'6:30 – 9:00', start:1110, end:1260, label:'Clase universitaria', type:'clase', ctrl:'check-clase'},
+        {id:'b12', time:'9:00 – 10:00', start:1260, end:1320, label:'Planeación día siguiente', type:'ingles', ctrl:'check', sub:'lectura en inglés'},
+        {id:'b13', time:'10:00 pm', start:1320, end:1440, label:'Dormir', type:'descanso', ctrl:'sleep', sub:'meta: antes de las 11:00 pm'}
+      ]},
+      jue: { blocks: [
+        {id:'b1', time:'5:00 – 5:30', start:300, end:330, label:'Culto devocional', type:'devoc', ctrl:'check'},
+        {id:'b2', time:'5:30 – 6:30', start:330, end:390, label:'Desayuno', type:'comida', ctrl:'none'},
+        {id:'b3', time:'6:30 – 7:00', start:390, end:420, label:'Inglés + lectura', type:'ingles', ctrl:'slider', max:30},
+        {id:'b4', time:'7:30 – 8:00', start:450, end:480, label:'Alistamiento trabajo', type:'alistamiento', ctrl:'none'},
+        {id:'b5', time:'8:00 – 12:30', start:480, end:750, label:'Trabajo', type:'trabajo', ctrl:'none'},
+        {id:'b6', time:'12:30 – 1:30', start:750, end:810, label:'Almuerzo y reposo', type:'comida', ctrl:'none'},
+        {id:'b7', time:'1:30 – 3:30', start:810, end:930, label:'Estudio', type:'estudio', ctrl:'slider', max:120},
+        {id:'b8', time:'3:30 – 4:00', start:930, end:960, label:'Alistamiento clase', type:'alistamiento', ctrl:'none'},
+        {id:'b9', time:'4:00 – 5:30', start:960, end:1050, label:'Clase universitaria', type:'clase', ctrl:'check-clase'},
+        {id:'b10', time:'5:30 – 6:00', start:1050, end:1080, label:'Cena', type:'comida', ctrl:'none'},
+        {id:'b11', time:'6:00 – 9:30', start:1080, end:1290, label:'Clase universitaria', type:'clase', ctrl:'check-clase'},
+        {id:'b12', time:'9:30 – 10:00', start:1290, end:1320, label:'Planeación día siguiente', type:'ingles', ctrl:'check', sub:'lectura en inglés'},
+        {id:'b13', time:'10:00 pm', start:1320, end:1440, label:'Dormir', type:'descanso', ctrl:'sleep', sub:'meta: antes de las 11:00 pm'}
+      ]},
+      vie: { blocks: [
+        {id:'b1', time:'5:00 – 5:30', start:300, end:330, label:'Culto devocional', type:'devoc', ctrl:'check'},
+        {id:'b2', time:'5:30 – 6:30', start:330, end:390, label:'Desayuno', type:'comida', ctrl:'none'},
+        {id:'b3', time:'6:30 – 7:00', start:390, end:420, label:'Inglés + lectura', type:'ingles', ctrl:'slider', max:30},
+        {id:'b4', time:'7:30 – 8:00', start:450, end:480, label:'Alistamiento trabajo', type:'alistamiento', ctrl:'none'},
+        {id:'b5', time:'8:00 – 12:30', start:480, end:750, label:'Trabajo', type:'trabajo', ctrl:'none'},
+        {id:'b6', time:'12:30 – 1:30', start:750, end:810, label:'Almuerzo y reposo', type:'comida', ctrl:'none'},
+        {id:'b7', time:'1:30 – 4:30', start:810, end:990, label:'Estudio / labores', type:'estudio', ctrl:'slider', max:180},
+        {id:'b8', time:'4:30 – 5:00', start:990, end:1020, label:'Alistamiento', type:'alistamiento', ctrl:'none'},
+        {id:'b9', time:'5:00 – 5:30', start:1020, end:1050, label:'Cena', type:'comida', ctrl:'none'},
+        {id:'b10', time:'5:30 – 10:00', start:1050, end:1320, label:'Recepción del sábado e iglesia', type:'iglesia', ctrl:'none'},
+        {id:'b11', time:'10:00 pm', start:1320, end:1440, label:'Dormir', type:'descanso', ctrl:'sleep', sub:'meta: antes de las 11:00 pm'}
+      ]},
+      sab: { special: 'sabado', blocks: [
+        {id:'b1', time:'Todo el día', start:0, end:1200, label:'Día del Señor', type:'iglesia', ctrl:'none'},
+        {id:'b2', time:'Noche', start:1200, end:1320, label:'Actividad física', type:'actividad', ctrl:'none'},
+        {id:'b3', time:'10 – 11 pm', start:1320, end:1440, label:'Dormir', type:'descanso', ctrl:'sleep', sub:'meta: antes de las 11:00 pm'}
+      ]}
+    },
+    compliance: {}
+  };
+}
+
+function vacacionesProfile() {
+  return {
+    id: 'p_vac_' + Date.now(),
+    name: 'Vacaciones',
+    schedule: {
+      dom: { special: 'domingo', blocks: [] },
+      lun: { blocks: [] },
+      mar: { blocks: [] },
+      mie: { blocks: [] },
+      jue: { blocks: [] },
+      vie: { blocks: [] },
+      sab: { special: 'sabado', blocks: [] }
+    },
+    compliance: {}
+  };
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+function init() {
+  profiles = S.get('profiles') || [];
+  activeProfileId = S.get('activeProfile');
+  if (profiles.length === 0) {
+    const p1 = defaultProfile();
+    const p2 = vacacionesProfile();
+    profiles = [p1, p2];
+    activeProfileId = p1.id;
+    saveProfiles();
+  }
+  if (!activeProfileId || !profiles.find(p => p.id === activeProfileId)) {
+    activeProfileId = profiles[0].id;
+    S.set('activeProfile', activeProfileId);
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+  markToday();
+  go(new Date().getDay());
+}
+
+function saveProfiles() {
+  S.set('profiles', profiles);
+  S.set('activeProfile', activeProfileId);
+}
+
+function getActive() {
+  return profiles.find(p => p.id === activeProfileId);
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+function go(i) {
+  document.querySelectorAll('.tab').forEach((t,x) => t.classList.toggle('active', x===i));
+  currentDay = i;
+  document.getElementById('scroll').scrollTop = 0;
+  renderDay();
+}
+
+function markToday() {
+  const t = new Date().getDay();
+  document.querySelectorAll('.tab').forEach((tab,i) => tab.classList.toggle('today-tab', i===t));
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────
+function updateClock() {
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2,'0'), m = String(d.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent = h+':'+m;
+  document.getElementById('hday').textContent = DAYS[d.getDay()] + ' · ' + d.toLocaleDateString('es-CO',{day:'numeric',month:'long'});
+  const p = getActive();
+  document.getElementById('profile-name-display').textContent = p ? p.name : '';
   updateNow();
 }
 
-function toggleCheck(btn){
-  const done=!btn.classList.contains('done');
-  btn.classList.toggle('done',done);
-  S.set(btn.dataset.key,done?'1':'0');
-  renderAll();
-}
+function nm() { const d = new Date(); return d.getHours()*60+d.getMinutes(); }
 
-function updSlider(inp){
-  const v=parseInt(inp.value), max=parseInt(inp.max);
-  const lbl=inp.nextElementSibling;
-  lbl.textContent=ms(v);
-  const r=v/max;
-  lbl.className='slider-time '+(v===0?'s-zero':r<0.5?'s-low':r<0.8?'s-mid':'s-high');
-  S.set(inp.dataset.key,v);
-  renderAll();
-}
-
-function updateNow(){
-  document.querySelectorAll('.block').forEach(b=>b.classList.remove('now','past'));
-  if(cv===0||cv===6) return;
-  const now=nm();
-  const view=document.querySelector('.view.active');
-  if(!view) return;
-  view.querySelectorAll('.block[data-s]').forEach(b=>{
-    const s=parseInt(b.dataset.s),e=parseInt(b.dataset.e);
-    if(now>=e) b.classList.add('past');
-    else if(now>=s&&now<e) b.classList.add('now');
+function updateNow() {
+  document.querySelectorAll('.block').forEach(b => b.classList.remove('now','past'));
+  const todayView = new Date().getDay();
+  if (currentDay !== todayView) return;
+  const now = nm();
+  document.querySelectorAll('.block[data-s]').forEach(b => {
+    const s = parseInt(b.dataset.s), e = parseInt(b.dataset.e);
+    if (now >= e) b.classList.add('past');
+    else if (now >= s && now < e) b.classList.add('now');
   });
 }
 
-function updateClock(){
-  const d=new Date();
-  const h=String(d.getHours()).padStart(2,'0'),m=String(d.getMinutes()).padStart(2,'0');
-  document.getElementById('clock').textContent=h+':'+m;
-  const names=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-  const date=d.toLocaleDateString('es-CO',{day:'numeric',month:'long'});
-  document.getElementById('hday').textContent=names[d.getDay()]+' · '+date;
+// ── UTILS ─────────────────────────────────────────────────────
+function ms(m) { const h=Math.floor(m/60),mn=m%60; return h+':'+(mn<10?'0':'')+mn; }
+function typeOf(id) { return TYPES.find(t => t.id===id) || TYPES[TYPES.length-1]; }
+function uid() { return 'b_'+Date.now()+'_'+Math.random().toString(36).slice(2,6); }
+
+function cKey(day, blockId, ctrl) { return `${activeProfileId}_${day}_${blockId}_${ctrl}`; }
+function gc(key) { const p=getActive(); return p && p.compliance && p.compliance[key] === true; }
+function sc(key, val) { const p=getActive(); if(!p) return; if(!p.compliance) p.compliance={}; p.compliance[key]=val; saveProfiles(); }
+function gm(key) { const p=getActive(); return (p && p.compliance && p.compliance[key+'_m']) || 0; }
+function sm(key, val) { const p=getActive(); if(!p) return; if(!p.compliance) p.compliance={}; p.compliance[key+'_m']=val; saveProfiles(); }
+
+// ── RENDER DAY ────────────────────────────────────────────────
+function renderDay() {
+  const p = getActive();
+  if (!p) return;
+  const dayKey = DAY_KEYS[currentDay];
+  const dayData = p.schedule[dayKey];
+  const container = document.getElementById('day-content');
+  let html = '';
+
+  if (dayData.special === 'domingo') {
+    html += renderDomingo();
+  } else if (dayData.special === 'sabado') {
+    html += renderSabado(dayData, dayKey);
+  } else {
+    html += `<div class="day-label">${DAYS[currentDay]} <button class="edit-day-btn" onclick="openAddBlock('${dayKey}')">+ Añadir bloque</button></div>`;
+    if (dayData.blocks.length === 0) {
+      html += `<div class="hueco">Sin bloques — toca "Añadir bloque" para empezar</div>`;
+    }
+    dayData.blocks.forEach(b => { html += renderBlock(b, dayKey); });
+    html += renderDayStats(dayData, dayKey);
+  }
+
+  container.innerHTML = html;
   updateNow();
+  loadCompliance(dayData, dayKey);
 }
 
-function markToday(){
-  const t=td();
-  document.querySelectorAll('.tab').forEach((tab,i)=>tab.classList.toggle('today-tab',i===t));
+function renderBlock(b, dayKey) {
+  const t = typeOf(b.type);
+  const cls = b.hueco ? '' : (t.cls || '');
+  const key = cKey(dayKey, b.id, b.ctrl);
+
+  if (b.hueco) {
+    return `<div class="hueco" data-s="${b.start}" data-e="${b.end}">${b.time} · ${b.label}</div>`;
+  }
+
+  let ctrl = '';
+  if (b.ctrl === 'check') ctrl = `<button class="check-btn" data-key="${key}" onclick="toggleCheck(this)">✓ Hecho</button>`;
+  else if (b.ctrl === 'check-clase') ctrl = `<button class="check-btn" data-key="${key}" onclick="toggleCheck(this)">✓ Asistí</button>`;
+  else if (b.ctrl === 'sleep') ctrl = `<button class="check-btn sleep-btn" data-key="${key}" onclick="toggleCheck(this)">✓ A tiempo</button>`;
+  else if (b.ctrl === 'slider') {
+    const max = b.max || 60;
+    const step = max <= 60 ? 5 : 15;
+    ctrl = `<div class="slider-wrap"><input type="range" min="0" max="${max}" step="${step}" value="0" data-key="${key}" data-max="${max}" oninput="updSlider(this)"><div class="slider-time s-zero">0:00</div></div>`;
+  }
+
+  const editBtn = `<button class="edit-block-btn" onclick="openEditBlock('${dayKey}','${b.id}')" title="Editar">✏️</button>`;
+
+  return `<div class="block ${cls}" data-s="${b.start}" data-e="${b.end}">
+    <div class="block-row">
+      <div class="block-time">${b.time}</div>
+      <div class="block-body">
+        <span class="block-icon">${t.icon}</span>
+        <div class="block-text">
+          <div class="block-label">${b.label}</div>
+          ${b.sub ? `<div class="block-sub">${b.sub}</div>` : ''}
+        </div>
+        <div class="block-ctrl">${ctrl}${editBtn}</div>
+      </div>
+    </div>
+  </div>`;
 }
 
-function bRow(name,val,ratio,color){
-  const w=Math.min(Math.round(ratio*100),100);
+function renderDomingo() {
+  const p = getActive();
+  let html = `<div class="day-label">Domingo — primer día de la semana</div>`;
+  html += `<div class="reminder-card"><span style="font-size:16px">🔔</span><div class="reminder-text">Inicio del día — revisa tu lista de tareas</div><div class="reminder-time">8:00 am</div></div>`;
+  html += `<div class="reminder-card"><span style="font-size:16px">🎯</span><div class="reminder-text">¿Cómo va tu día? Recuerda tus objetivos</div><div class="reminder-time">2:00 pm</div></div>`;
+  html += `<div class="day-label" style="margin-top:12px">Tareas del día</div>`;
+  html += `<div class="dom-task"><span style="font-size:16px;flex-shrink:0">📖</span><div class="dom-text">Repaso de estudio — revisar temas de la semana y avanzar en el plan de aprendizaje</div></div>`;
+  html += `<div class="dom-task"><span style="font-size:16px;flex-shrink:0">👕</span><div class="dom-text">Labores del hogar — lavar ropa, tender, orden general</div></div>`;
+  html += `<div class="dom-task"><span style="font-size:16px;flex-shrink:0">📍</span><div class="dom-text">Vueltas y diligencias según necesidad del día</div></div>`;
+  html += `<div class="dom-task"><span style="font-size:16px;flex-shrink:0">💼</span><div class="dom-text">Trabajo si aplica para este domingo</div></div>`;
+  html += `<div class="day-label" style="margin-top:14px">Estadísticas de la semana</div>`;
+  html += renderWeekStats(p);
+  html += `<button class="reset-btn" onclick="resetWeek()">↺ Reiniciar semana</button>`;
+  return html;
+}
+
+function renderSabado(dayData, dayKey) {
+  let html = `<div class="day-label">Sábado — día del Señor <button class="edit-day-btn" onclick="openAddBlock('${dayKey}')">+ Añadir</button></div>`;
+  html += `<div class="sab-card"><div class="sab-emoji">☀️</div><div class="sab-title">Día de reposo y adoración</div><div class="sab-sub">Sin actividades de estudio ni trabajo hasta el anochecer</div></div>`;
+  dayData.blocks.forEach(b => { html += renderBlock(b, dayKey); });
+  return html;
+}
+
+function loadCompliance(dayData, dayKey) {
+  if (!dayData.blocks) return;
+  dayData.blocks.forEach(b => {
+    const key = cKey(dayKey, b.id, b.ctrl);
+    if (b.ctrl === 'check' || b.ctrl === 'check-clase' || b.ctrl === 'sleep') {
+      const btn = document.querySelector(`[data-key="${key}"]`);
+      if (btn) btn.classList.toggle('done', gc(key));
+    } else if (b.ctrl === 'slider') {
+      const inp = document.querySelector(`input[data-key="${key}"]`);
+      if (inp) { inp.value = gm(key); updSlider(inp); }
+    }
+  });
+}
+
+// ── CONTROLS ─────────────────────────────────────────────────
+function toggleCheck(btn) {
+  const done = !btn.classList.contains('done');
+  btn.classList.toggle('done', done);
+  sc(btn.dataset.key, done);
+  renderDayStatsOnly();
+}
+
+function updSlider(inp) {
+  const v = parseInt(inp.value), max = parseInt(inp.max);
+  const lbl = inp.nextElementSibling;
+  lbl.textContent = ms(v);
+  const r = v/max;
+  lbl.className = 'slider-time '+(v===0?'s-zero':r<0.5?'s-low':r<0.8?'s-mid':'s-high');
+  sm(inp.dataset.key, v);
+  renderDayStatsOnly();
+}
+
+// ── STATS ─────────────────────────────────────────────────────
+function bRow(name, val, ratio, color) {
+  const w = Math.min(Math.round(ratio*100),100);
   return `<div class="bar-row"><div class="bar-top"><span class="bar-name">${name}</span><span class="bar-val">${val}</span></div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${color}"></div></div></div>`;
 }
 
-function renderDay(day,cid){
-  const d=CFG[day], el=document.getElementById(cid);
-  if(!d||!el) return;
-  const cD=d.cultos.filter(k=>gc(k)).length, cT=d.cultos.length;
-  const clD=d.clases.filter(k=>gc(k)).length, clT=d.clases.length;
-  const pD=d.plan.length>0?gc(d.plan[0]):null;
-  const sl=gc(d.sleep);
-  const iM=d.ingles.reduce((a,k)=>a+gm(k),0);
-  const eM=d.estudio.reduce((a,k)=>a+gm(k),0);
-  let sc=0,pt=0;
-  sc+=cD/Math.max(cT,1); pt++;
-  if(clT>0){sc+=clD/clT;pt++;}
-  if(d.plan.length>0){sc+=(pD?1:0);pt++;}
-  sc+=iM/d.mi; pt++;
-  sc+=eM/d.me; pt++;
-  sc+=(sl?1:0); pt++;
-  const pct=Math.round((sc/pt)*100);
-  let h=`<div class="stats-hdr">Estadísticas del día</div><div class="stats-body">`;
-  h+=bRow('Culto',cD+'/'+cT,cD/Math.max(cT,1),'var(--purple-mid)');
-  if(clT>0) h+=bRow('Clases',clD+'/'+clT,clD/Math.max(clT,1),'var(--amber-mid)');
-  if(d.plan.length>0) h+=bRow('Planeación',pD?'✓ Hecha':'Pendiente',pD?1:0,'var(--purple-mid)');
-  h+=bRow('Inglés',ms(iM)+' / '+ms(d.mi),iM/d.mi,'var(--purple-mid)');
-  h+=bRow('Estudio',ms(eM)+' / '+ms(d.me),eM/d.me,'var(--teal-mid)');
-  h+=bRow('Dormido a tiempo',sl?'✓ Sí':'No aún',sl?1:0,'var(--text)');
-  h+=`<div class="total-row"><span class="total-label">Cumplimiento del día</span><span class="total-val">${pct}%</span></div></div>`;
-  el.innerHTML=h;
-}
+function renderDayStats(dayData, dayKey) {
+  const blocks = dayData.blocks || [];
+  const checks = blocks.filter(b => b.ctrl==='check'||b.ctrl==='check-clase');
+  const sliders = blocks.filter(b => b.ctrl==='slider');
+  const sleepB = blocks.find(b => b.ctrl==='sleep');
+  if (checks.length===0 && sliders.length===0 && !sleepB) return '';
 
-function renderWeek(){
-  const days=['lun','mar','mie','jue','vie'];
-  let cD=0,cT=0,clD=0,clT=0,pD=0,pT=0,slD=0;
-  let iM=0,iMx=0,eM=0,eMx=0;
-  days.forEach(d=>{
-    const dd=CFG[d];
-    cD+=dd.cultos.filter(k=>gc(k)).length; cT+=dd.cultos.length;
-    clD+=dd.clases.filter(k=>gc(k)).length; clT+=dd.clases.length;
-    if(dd.plan.length>0){pD+=gc(dd.plan[0])?1:0;pT++;}
-    iM+=dd.ingles.reduce((a,k)=>a+gm(k),0); iMx+=dd.mi;
-    eM+=dd.estudio.reduce((a,k)=>a+gm(k),0); eMx+=dd.me;
-    slD+=gc(dd.sleep)?1:0;
+  let score=0, parts=0;
+  let html = `<div class="stats-block"><div class="stats-hdr">Estadísticas del día</div><div class="stats-body">`;
+
+  checks.forEach(b => {
+    const key = cKey(dayKey, b.id, b.ctrl);
+    const done = gc(key);
+    const label = b.ctrl==='check-clase' ? 'Clase: '+b.label : b.label;
+    html += bRow(label, done?'✓ Sí':'Pendiente', done?1:0, 'var(--amber-mid)');
+    score += done?1:0; parts++;
   });
-  slD+=gc('sab-sleep')?1:0;
-  const slT=6;
-  const tot=Math.round(((cD/cT)+(clD/Math.max(clT,1))+(pD/Math.max(pT,1))+(iM/iMx)+(eM/eMx)+(slD/slT))/6*100);
-  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
-  set('w-total',tot+'%'); set('w-culto',cD+'/'+cT); set('w-clases',clD+'/'+clT); set('w-plan',pD+'/'+pT);
-  set('w-ih',ms(iM)+' / '+ms(iMx)); set('w-eh',ms(eM)+' / '+ms(eMx)); set('w-sl',slD+'/'+slT);
-  const bw=(id,r)=>{const e=document.getElementById(id);if(e)e.style.width=Math.min(Math.round(r*100),100)+'%'};
-  bw('w-ib',iM/iMx); bw('w-eb',eM/eMx); bw('w-sb',slD/slT);
-}
 
-function renderAll(){
-  renderDay('lun','stats-lun'); renderDay('mar','stats-mar');
-  renderDay('mie','stats-mie'); renderDay('jue','stats-jue'); renderDay('vie','stats-vie');
-  renderWeek();
-}
-
-function resetWeek(){
-  if(!confirm('¿Reiniciar todos los datos de la semana?')) return;
-  S.clear(); loadAll(); renderAll();
-}
-
-function loadAll(){
-  document.querySelectorAll('[data-key]').forEach(el=>{
-    const v=S.get(el.dataset.key);
-    if(el.tagName==='BUTTON') el.classList.toggle('done',v==='1');
-    else if(el.tagName==='INPUT'&&v!==null){ el.value=parseInt(v); updSlider(el); }
+  sliders.forEach(b => {
+    const key = cKey(dayKey, b.id, b.ctrl);
+    const mins = gm(key);
+    const max = b.max||60;
+    html += bRow(b.label, ms(mins)+' / '+ms(max), mins/max, 'var(--teal-mid)');
+    score += mins/max; parts++;
   });
+
+  if (sleepB) {
+    const key = cKey(dayKey, sleepB.id, sleepB.ctrl);
+    const done = gc(key);
+    html += bRow('Dormido a tiempo', done?'✓ Sí':'No aún', done?1:0, 'var(--text)');
+    score += done?1:0; parts++;
+  }
+
+  const pct = parts>0 ? Math.round((score/parts)*100) : 0;
+  html += `<div class="total-row"><span class="total-label">Cumplimiento del día</span><span class="total-val">${pct}%</span></div></div></div>`;
+  return html;
 }
 
-window.addEventListener('load',()=>{
-  loadAll(); renderAll(); markToday(); updateClock();
-  setInterval(updateClock,30000);
-  go(td());
-});
+function renderDayStatsOnly() {
+  const p = getActive();
+  if (!p) return;
+  const dayKey = DAY_KEYS[currentDay];
+  const dayData = p.schedule[dayKey];
+  const existing = document.querySelector('.stats-block');
+  if (existing) existing.outerHTML = renderDayStats(dayData, dayKey);
+  else {
+    const c = document.getElementById('day-content');
+    if (c && dayData && dayData.blocks) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = renderDayStats(dayData, dayKey);
+      if (tmp.firstChild) c.appendChild(tmp.firstChild);
+    }
+  }
+}
+
+function renderWeekStats(p) {
+  if (!p) return '';
+  let cD=0,cT=0,clD=0,clT=0,slD=0,slT=0,iM=0,iMx=0,eM=0,eMx=0,sleepD=0,sleepT=0;
+  DAY_KEYS.forEach(dk => {
+    const dd = p.schedule[dk];
+    if (!dd||!dd.blocks) return;
+    dd.blocks.forEach(b => {
+      const key = cKey(dk, b.id, b.ctrl);
+      if (b.ctrl==='check') { cD+=gc(key)?1:0; cT++; }
+      if (b.ctrl==='check-clase') { clD+=gc(key)?1:0; clT++; }
+      if (b.ctrl==='sleep') { sleepD+=gc(key)?1:0; sleepT++; }
+      if (b.ctrl==='slider') {
+        const mins = gm(key), max = b.max||60;
+        if (b.type==='ingles') { iM+=mins; iMx+=max; }
+        else { eM+=mins; eMx+=max; }
+      }
+    });
+  });
+  const tot = Math.round(((cT>0?cD/cT:0)+(clT>0?clD/clT:0)+(sleepT>0?sleepD/sleepT:0)+(iMx>0?iM/iMx:0)+(eMx>0?eM/eMx:0))/5*100);
+  let html = `<div class="week-grid">
+    <div class="week-card hl"><div class="week-val">${tot}%</div><div class="week-lbl">Cumplimiento general</div></div>
+    <div class="week-card"><div class="week-val">${cD+sleepD}/${cT+sleepT}</div><div class="week-lbl">Compromisos cumplidos</div></div>
+    <div class="week-card"><div class="week-val">${clD}/${clT}</div><div class="week-lbl">Clases asistidas</div></div>
+    <div class="week-card"><div class="week-val">${sleepD}/${sleepT}</div><div class="week-lbl">Noches a tiempo</div></div>
+  </div>`;
+  html += `<div class="stats-block"><div class="stats-hdr">Horas acumuladas en la semana</div><div class="stats-body">`;
+  if (iMx>0) html += bRow('Inglés', ms(iM)+' / '+ms(iMx), iMx>0?iM/iMx:0, 'var(--purple-mid)');
+  if (eMx>0) html += bRow('Estudio', ms(eM)+' / '+ms(eMx), eMx>0?eM/eMx:0, 'var(--teal-mid)');
+  html += `</div></div>`;
+  return html;
+}
+
+function resetWeek() {
+  if (!confirm('¿Reiniciar todos los datos de cumplimiento de esta semana?')) return;
+  const p = getActive();
+  if (p) { p.compliance = {}; saveProfiles(); }
+  renderDay();
+}
+
+// ── BLOCK EDITOR ──────────────────────────────────────────────
+let editorState = { dayKey:'', blockId:'', label:'', time:'', start:0, end:0, type:'otro', ctrl:'none', max:60, sub:'', hueco:false };
+
+function openAddBlock(dayKey) {
+  editorState = { dayKey, blockId:'', label:'', time:'', start:0, end:0, type:'otro', ctrl:'none', max:60, sub:'', hueco:false };
+  showBlockModal(false);
+}
+
+function openEditBlock(dayKey, blockId) {
+  const p = getActive();
+  const day = p.schedule[dayKey];
+  const b = day.blocks.find(x => x.id===blockId);
+  if (!b) return;
+  editorState = { dayKey, blockId, ...b };
+  showBlockModal(true);
+}
+
+function showBlockModal(isEdit) {
+  const t = editorState;
+  const typeGrid = TYPES.map(tp =>
+    `<div class="type-opt ${t.type===tp.id?'selected':''}" onclick="selectType('${tp.id}')"><span class="type-icon">${tp.icon}</span><span class="type-name">${tp.name}</span></div>`
+  ).join('');
+  const ctrlGrid = CTRLS.map(c =>
+    `<div class="ctrl-opt ${t.ctrl===c.id?'selected':''}" onclick="selectCtrl('${c.id}')">${c.name}</div>`
+  ).join('');
+
+  const html = `<div class="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-title">${isEdit?'Editar bloque':'Nuevo bloque'}<button class="modal-close" onclick="closeModal()">×</button></div>
+      <div class="form-group"><label class="form-label">Nombre del bloque</label><input class="form-input" id="e-label" value="${t.label}" placeholder="Ej: Clase de cálculo"></div>
+      <div class="form-group"><label class="form-label">Horario (texto)</label><input class="form-input" id="e-time" value="${t.time}" placeholder="Ej: 7:00 – 9:00 pm"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Inicio (minutos desde 0h)</label><input class="form-input" id="e-start" type="number" value="${t.start}" placeholder="ej: 420 = 7:00am"></div>
+        <div class="form-group"><label class="form-label">Fin (minutos)</label><input class="form-input" id="e-end" type="number" value="${t.end}" placeholder="ej: 540 = 9:00am"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Tipo</label><div class="type-grid">${typeGrid}</div></div>
+      <div class="form-group"><label class="form-label">Control de cumplimiento</label><div class="ctrl-grid">${ctrlGrid}</div></div>
+      <div class="form-group" id="max-group" style="${t.ctrl==='slider'?'':'display:none'}"><label class="form-label">Duración máxima (minutos)</label><input class="form-input" id="e-max" type="number" value="${t.max}" placeholder="ej: 90 = 1h 30min"></div>
+      <div class="form-group"><label class="form-label">Subtítulo (opcional)</label><input class="form-input" id="e-sub" value="${t.sub||''}" placeholder="Ej: lectura en inglés"></div>
+      <button class="btn-primary" onclick="saveBlock(${isEdit})">Guardar bloque</button>
+      ${isEdit?`<button class="btn-primary btn-danger" onclick="deleteBlock()">Eliminar bloque</button>`:''}
+    </div>
+  </div>`;
+  document.getElementById('modal-container').innerHTML = html;
+}
+
+function selectType(id) { editorState.type=id; showBlockModal(!!editorState.blockId); }
+function selectCtrl(id) {
+  editorState.ctrl=id;
+  showBlockModal(!!editorState.blockId);
+  const mg = document.getElementById('max-group');
+  if (mg) mg.style.display = id==='slider'?'':'none';
+}
+
+function saveBlock(isEdit) {
+  const label = document.getElementById('e-label').value.trim();
+  const time = document.getElementById('e-time').value.trim();
+  const start = parseInt(document.getElementById('e-start').value)||0;
+  const end = parseInt(document.getElementById('e-end').value)||0;
+  const sub = document.getElementById('e-sub').value.trim();
+  const maxEl = document.getElementById('e-max');
+  const max = maxEl ? (parseInt(maxEl.value)||60) : 60;
+  if (!label) { alert('El nombre del bloque es obligatorio'); return; }
+
+  const p = getActive();
+  const day = p.schedule[editorState.dayKey];
+
+  if (isEdit) {
+    const idx = day.blocks.findIndex(b => b.id===editorState.blockId);
+    if (idx>=0) day.blocks[idx] = { ...day.blocks[idx], label, time, start, end, type:editorState.type, ctrl:editorState.ctrl, max, sub };
+  } else {
+    day.blocks.push({ id:uid(), label, time, start, end, type:editorState.type, ctrl:editorState.ctrl, max, sub });
+    day.blocks.sort((a,b) => a.start-b.start);
+  }
+  saveProfiles(); closeModal(); renderDay();
+}
+
+function deleteBlock() {
+  if (!confirm('¿Eliminar este bloque?')) return;
+  const p = getActive();
+  const day = p.schedule[editorState.dayKey];
+  day.blocks = day.blocks.filter(b => b.id!==editorState.blockId);
+  saveProfiles(); closeModal(); renderDay();
+}
+
+function closeModal() { document.getElementById('modal-container').innerHTML=''; }
+function closeModalOutside(e) { if(e.target===e.currentTarget) closeModal(); }
+
+// ── PROFILES ──────────────────────────────────────────────────
+function openProfiles() {
+  renderProfilesList();
+  document.getElementById('profiles-screen').style.display='flex';
+}
+
+function closeProfiles() {
+  document.getElementById('profiles-screen').style.display='none';
+  renderDay();
+}
+
+function renderProfilesList() {
+  const list = document.getElementById('profiles-list');
+  let html = '';
+  profiles.forEach(p => {
+    const isActive = p.id === activeProfileId;
+    const blockCount = Object.values(p.schedule).reduce((a,d) => a+(d.blocks?d.blocks.length:0), 0);
+    html += `<div class="profile-card ${isActive?'active-profile':''}" onclick="selectProfile('${p.id}')">
+      <div class="profile-card-body">
+        ${isActive?'<span class="active-check">✓</span>':'<span style="width:24px"></span>'}
+        <div class="profile-card-info">
+          <div class="profile-card-name">${p.name}</div>
+          <div class="profile-card-meta">${blockCount} bloques configurados</div>
+        </div>
+        <div class="profile-card-actions">
+          <button class="profile-action-btn" onclick="event.stopPropagation();editProfileName('${p.id}')">✏️</button>
+          ${profiles.length>1?`<button class="profile-action-btn danger" onclick="event.stopPropagation();deleteProfile('${p.id}')">🗑️</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  });
+  html += `<button class="new-profile-btn" onclick="createProfile()">+ Crear nuevo perfil</button>`;
+  html += `<br><button class="reset-btn" style="margin:0 auto" onclick="closeProfiles()">← Volver al horario</button>`;
+  list.innerHTML = html;
+}
+
+function selectProfile(id) {
+  activeProfileId = id;
+  saveProfiles();
+  closeProfiles();
+}
+
+function createProfile() {
+  const name = prompt('Nombre del nuevo perfil:');
+  if (!name || !name.trim()) return;
+  const p = vacacionesProfile();
+  p.name = name.trim();
+  profiles.push(p);
+  activeProfileId = p.id;
+  saveProfiles();
+  renderProfilesList();
+}
+
+function editProfileName(id) {
+  const p = profiles.find(x => x.id===id);
+  if (!p) return;
+  const name = prompt('Nuevo nombre:', p.name);
+  if (!name || !name.trim()) return;
+  p.name = name.trim();
+  saveProfiles();
+  renderProfilesList();
+}
+
+function deleteProfile(id) {
+  if (!confirm('¿Eliminar este perfil? Se perderán todos sus datos.')) return;
+  profiles = profiles.filter(p => p.id!==id);
+  if (activeProfileId===id) activeProfileId = profiles[0].id;
+  saveProfiles();
+  renderProfilesList();
+}
+
+// ── START ─────────────────────────────────────────────────────
+window.addEventListener('load', init);
 </script>
 </body>
 </html>
